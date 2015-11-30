@@ -23,15 +23,18 @@
 
         function link(scope, element, attrs) {
             var elem = document.getElementById(attrs.id);
-            loadScript(API_KEY, elem);
+            var input = document.getElementById('pac-input');
+            loadScript(API_KEY, elem, input);
+
         }
 
-        function loadScript(key, elem) {
+        function loadScript(key, elem, input) {
             var googleScript = document.createElement('script');
             googleScript.src = 'https://maps.googleapis.com/maps/api/js?key=' + API_KEY + '&libraries=places';
             document.getElementsByTagName("head")[0].appendChild(googleScript);
             googleScript.onload = function() {
-                PlacesService.initMap(elem);
+                PlacesService.initMap(elem, input);
+
             }
         }
     }
