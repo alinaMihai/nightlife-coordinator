@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('nightlifeCoordinatorApp')
-    .controller('MainCtrl', ['$q',
-        function($q) {
+    .controller('MainCtrl', ['$q', 'CheckinService',
+        function($q, CheckinService) {
             var vm = this;
             var map;
             var infoWindow;
@@ -10,6 +10,8 @@ angular.module('nightlifeCoordinatorApp')
             var marker;
             var service;
             vm.initMap = initMap;
+            vm.checkIn = checkIn;
+            vm.people = 0;
 
             ////////////////
             function initMap(element, input) {
@@ -24,22 +26,39 @@ angular.module('nightlifeCoordinatorApp')
                 infoWindow = new google.maps.InfoWindow({
                     map: map
                 });
+                infoWindow.setContent('You are here');
+
                 marker = new google.maps.Marker({
                     map: map,
                     anchorPoint: new google.maps.Point(0, -29)
                 });
+                infoWindow.open(map, marker);
                 service = new google.maps.places.PlacesService(map);
 
                 getCurrentLocation().then(function(currentLocation) {
                     if (currentLocation) {
                         infoWindow.setPosition(currentLocation);
                         map.setCenter(currentLocation);
-                        map.addListener('idle', function() {
-                            clearResultsList();
-                            getLocations();
-                        });
+                        getLocations(currentLocation);
+                        setEvent('dragend');
+                        setEvent('zoom_changed');
                         addAutocomplete(input);
                     }
+                });
+            }
+
+            function checkIn(placeId) {
+                console.log(placeId);
+            }
+
+            function commonHandling() {
+                clearResultsList();
+                getLocations();
+            }
+
+            function setEvent(eventName) {
+                map.addListener(eventName, function() {
+                    commonHandling();
                 });
             }
 
@@ -63,11 +82,13 @@ angular.module('nightlifeCoordinatorApp')
             }
 
             function getLocations(currentLocation) {
-                console.log('call' + currentLocation);
+
                 var request = {
                     bounds: map.getBounds(),
                     types: ['bar'],
-                    openNow: true
+                    openNow: true,
+                    location: currentLocation,
+                    radius: 500
                 };
                 service.nearbySearch(request, callback);
             }
@@ -98,11 +119,31 @@ angular.module('nightlifeCoordinatorApp')
                         }));
                         marker.setVisible(true);
                         addResultsRow(place);
+                        getPeopleGoing(place.place_id);
+                        checkInHandler(place.place_id);
                         google.maps.event.addListener(marker, 'click', function() {
                             infoWindow.setContent('<div><strong>' + place.name + '</strong><br>' + place.formatted_address);
                             infoWindow.open(map, this);
                         });
                     }
+                });
+            }
+
+            function checkInHandler(placeId) {
+                document.getElementById(placeId).onclick = function() {
+                    var placeBtn = this;
+                    CheckinService.checkIn(placeId).then(function(place) {
+                        var people = place.users.length;
+                        placeBtn.firstChild.innerHTML = people || "";
+
+                    });
+
+                };
+            }
+
+            function getPeopleGoing(placeId) {
+                CheckinService.getPeopleGoingTonight(placeId).then(function(people) {
+                    document.getElementById(placeId).firstChild.innerHTML = people;
                 });
             }
 
@@ -125,8 +166,9 @@ angular.module('nightlifeCoordinatorApp')
                         map.fitBounds(place.geometry.viewport);
                     } else {
                         map.setCenter(place.geometry.location);
-                        map.setZoom(15); // Why 17? Because it looks good.
+                        map.setZoom(15);
                     }
+                    getLocations();
                 });
             }
 
@@ -134,18 +176,29 @@ angular.module('nightlifeCoordinatorApp')
                 console.log(place);
                 var resultsList = document.getElementById('resultsList');
                 var result = document.createElement('div');
-                result.className = 'list-group-item';
-                var html = "";
+                result.className = 'list-group-item result';
+                var html = '<div class="col-lg-2">';
+
                 if (place.photos) {
-                    html = '<img src=' + place.photos[0].getUrl({
+                    html += '<img src=' + place.photos[0].getUrl({
                         'maxWidth': 100,
                         'maxHeight': 100
                     }) + '><br/>';
                 }
-                var website = place.website ? place.website : '#'
-                html += '<a href=' + website + '><strong>' + place.name + '</strong></a>';
-                html += '<p>' + place.formatted_address + '</p>';
-                html += '<p>' + place.international_phone_number + '</p>';
+
+                var website = place.website ? place.website : place.url
+                html += '<a href=' + website + ' target="_blank"><strong>' + place.name + '</strong></a>';
+                if (place.rating) {
+                    html += showRating(place.rating);
+                }
+                if (place.formatted_phone_number) {
+                    html += '<p><b>Phone:</b> ' + place.formatted_phone_number + '</p>';
+                }
+
+                html += '</div><div class="col-lg-10">';
+                html += '<p><b>Address:</b> ' + place.formatted_address + ' <button class="btn btn-success" id="' + place.place_id + '"><span></span> GOING</button></p>';
+                html += addReviews(place);
+                html += "</div>";
                 result.innerHTML = html;
                 resultsList.appendChild(result);
             }
@@ -153,6 +206,30 @@ angular.module('nightlifeCoordinatorApp')
             function clearResultsList() {
                 var resultsList = document.getElementById('resultsList');
                 resultsList.innerHTML = '';
+            }
+
+            function addReviews(place) {
+                var html = "";
+                if (place.reviews) {
+                    var firstReview = place.reviews[0];
+                    html += "Client review: <p><b> " + firstReview.author_name + "</b> '" + firstReview.text + "'</p>";
+                }
+                return html;
+            }
+
+            function showRating(rating) {
+                var html = "<div class='stars'>";
+
+                while (rating > 1) {
+                    html += "<span class='star on'></span>";
+                    rating -= 1;
+                }
+                if (rating !== 0) {
+                    html += "<span class='star half'></span>";
+                }
+
+                html += "</div>";
+                return html;
             }
 
         }

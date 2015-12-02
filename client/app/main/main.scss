@@ -39,7 +39,8 @@
 }
 #map {
         height: 500px;
-        width:1000px;
+        margin-bottom:20px;
+       
 }
 .controls {
   margin-top: 10px;
@@ -67,4 +68,36 @@
 
 #pac-input:focus {
   border-color: #4d90fe;
+}
+.star {
+    font-size: x-large;
+    display: inline-block;
+    color: gray;
+}
+.star:last-child {
+    margin-right: 0;
+}
+.star:before {
+    content:'\2605';
+}
+.star.on {
+    color: gold;
+}
+.star.half:after {
+    content:'\2605';
+    color: gold;
+    position: absolute;
+    margin-left: -20px;
+    width: 10px;
+    overflow: hidden;
+}
+.result:before, .result:after {
+    content: " ";
+    display: table;
+}
+.result:after {
+    clear: both; 
+}
+.result button{
+  float:right;
 }

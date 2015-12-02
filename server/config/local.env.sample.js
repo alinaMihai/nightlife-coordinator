@@ -6,12 +6,12 @@
 // You will need to set these on the server you deploy to.
 
 module.exports = {
-  DOMAIN:           'http://localhost:9000',
-  SESSION_SECRET:   'nightlifecoordinator-secret',
+    DOMAIN: 'http://localhost:9000',
+    SESSION_SECRET: 'nightlifecoordinator-secret',
 
-  TWITTER_ID:       'app-id',
-  TWITTER_SECRET:   'secret',
+    TWITTER_ID: 'xq6rwerg8iMFuxJum0tvzQ5aB',
+    TWITTER_SECRET: '2U1CRnghS2flgtIcG4ciEq8NYlBi8gB6P0IROb8iQId8LyvzsU',
 
-  // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+    // Control debug level for modules using visionmedia/debug
+    DEBUG: ''
 };
