@@ -6,10 +6,6 @@ var Place = require('./place.model');
 
 exports.getPeopleGoingTonight = function(req, res) {
     var query = Place.findOne({});
-    var start = new Date();
-    start.setHours(0, 0, 0, 0);
-    var end = new Date();
-    end.setHours(23, 59, 59, 999);
 
     query.where('placeId', decodeURIComponent(req.params.placeId));
     query.exec(function(err, place) {
@@ -18,9 +14,8 @@ exports.getPeopleGoingTonight = function(req, res) {
         }
         if (place) {
             var users = place.users;
-            var people = users.filter(function(user) {
-                return user.date > start.getTime() && user.date < end.getTime();
-            });
+            var people = filterGoingUsers(users);
+            console.log(people);
             return res.status(200).json(people);
         }
     });
@@ -73,6 +68,7 @@ function create(res, place) {
 
 function removeUser(place, user, userIndex) {
     place.users.splice(userIndex, 1);
+    place.users = filterGoingUsers(place.users);
     return place;
 }
 
@@ -82,6 +78,7 @@ function addUser(place, userName) {
         date: new Date().getTime()
     }
     place.users.push(user);
+    place.users = filterGoingUsers(place.users);
     return place;
 }
 
@@ -89,7 +86,7 @@ function findUserIndex(users, userName) {
     var start = new Date();
     start.setHours(0, 0, 0, 0);
     for (var i = 0; i < users.length; i++) {
-        console.log(users[i].name, userName);
+
         if (users[i].name == userName && users[i].date > start.getTime()) {
             return i;
         }
@@ -97,6 +94,17 @@ function findUserIndex(users, userName) {
     return -1;
 }
 
+function filterGoingUsers(users) {
+    var start = new Date();
+    start.setHours(0, 0, 0, 0);
+    var end = new Date();
+    end.setHours(23, 59, 59, 999);
+    var people = users.filter(function(user) {
+        return user.date > start.getTime() && user.date < end.getTime();
+    });
+    return people;
+
+}
 
 function handleError(res, err) {
     return res.status(500).send(err);

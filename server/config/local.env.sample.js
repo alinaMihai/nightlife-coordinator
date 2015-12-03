@@ -9,8 +9,8 @@ module.exports = {
     DOMAIN: 'http://localhost:9000',
     SESSION_SECRET: 'nightlifecoordinator-secret',
 
-    TWITTER_ID: 'xq6rwerg8iMFuxJum0tvzQ5aB',
-    TWITTER_SECRET: '2U1CRnghS2flgtIcG4ciEq8NYlBi8gB6P0IROb8iQId8LyvzsU',
+    TWITTER_ID: 'app-id',
+    TWITTER_SECRET: 'secret',
 
     // Control debug level for modules using visionmedia/debug
     DEBUG: ''
