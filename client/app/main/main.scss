@@ -1,27 +1,7 @@
-.thing-form {
-    margin: 20px 0;
+.intro{
+    background-image: url(http://41.media.tumblr.com/db27e195a5bea8583ae21aec0905ee5d/tumblr_nyqchogXHf1tf8vylo1_1280.png);
+    background-size: cover;
 }
-
-#banner {
-    border-bottom: none;
-    margin-top: -20px;
-}
-
-#banner h1 {
-    font-size: 60px;
-    line-height: 1;
-    letter-spacing: -1px;
-}
-
-.hero-unit {
-    position: relative;
-    padding: 30px 15px;
-    color: #F5F5F5;
-    text-align: center;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #4393B9;
-}
-
 .footer {
     text-align: center;
     padding: 30px 0;
@@ -29,10 +9,7 @@
     border-top: 1px solid #E5E5E5;
 }
 
-.navbar-text {
-  margin-left: 15px;
-}
-  html, body {
+html, body {
         height: 100%;
         margin: 0;
         padding: 0;

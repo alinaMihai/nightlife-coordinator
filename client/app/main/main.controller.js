@@ -41,9 +41,11 @@ angular.module('nightlifeCoordinatorApp')
                         getLocations(currentLocation);
                         setEvent('dragend');
                         setEvent('zoom_changed');
-                        addAutocomplete(input);
+
                     }
+
                 });
+                addAutocomplete(input);
             }
 
             function checkIn(placeId) {
