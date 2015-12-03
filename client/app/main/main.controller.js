@@ -9,8 +9,6 @@ angular.module('nightlifeCoordinatorApp')
             var marker;
             var service;
             vm.initMap = initMap;
-            vm.checkIn = checkIn;
-            vm.people = 0;
 
             ////////////////
             function initMap(element, input) {
@@ -46,10 +44,6 @@ angular.module('nightlifeCoordinatorApp')
 
                 });
                 addAutocomplete(input);
-            }
-
-            function checkIn(placeId) {
-                console.log(placeId);
             }
 
             function commonHandling() {
