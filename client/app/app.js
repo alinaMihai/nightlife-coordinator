@@ -15,7 +15,7 @@ angular.module('nightlifeCoordinatorApp', [
         $httpProvider.interceptors.push('authInterceptor');
     })
 
-.factory('authInterceptor', function($rootScope, $q, $cookieStore, $location) {
+.factory('authInterceptor', function($rootScope, $q, $cookieStore, $window) {
     return {
         // Add authorization token to headers
         request: function(config) {
@@ -29,7 +29,7 @@ angular.module('nightlifeCoordinatorApp', [
         // Intercept 401s and redirect you to login
         responseError: function(response) {
             if (response.status === 401) {
-                $location.path('/login');
+                $window.location.href = '/auth/twitter'
                 // remove any stale tokens
                 $cookieStore.remove('token');
                 return $q.reject(response);
@@ -40,13 +40,13 @@ angular.module('nightlifeCoordinatorApp', [
     };
 })
 
-.run(function($rootScope, $location, Auth) {
+.run(function($rootScope, $window, Auth) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function(event, next) {
         Auth.isLoggedInAsync(function(loggedIn) {
             if (next.authenticate && !loggedIn) {
                 event.preventDefault();
-                $location.path('/login');
+                $window.location.href = '/auth/twitter'
             }
         });
     });

@@ -154,7 +154,7 @@ angular.module('nightlifeCoordinatorApp')
                     } else {
                         document.getElementById(placeId).firstChild.className = "";
                     }
-                    document.getElementById(placeId).nextSibling.innerHTML = data[0];
+                    document.getElementById(placeId).nextSibling.innerHTML = data[0] || "";
                 });
             }
 
@@ -184,7 +184,7 @@ angular.module('nightlifeCoordinatorApp')
             }
 
             function addResultsRow(place) {
-                console.log(place);
+
                 var resultsList = document.getElementById('resultsList');
                 var result = document.createElement('div');
                 result.className = 'list-group-item result';

@@ -11,7 +11,7 @@ exports.getPeopleGoingTonight = function(req, res) {
     var end = new Date();
     end.setHours(23, 59, 59, 999);
 
-    query.where('placeId', req.params.placeId);
+    query.where('placeId', decodeURIComponent(req.params.placeId));
     query.exec(function(err, place) {
         if (err) {
             return handleError(res, err);
