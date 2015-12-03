@@ -37,7 +37,7 @@
             googleScript.onload = function() {
                 callback(elem, input);
 
-            }
+            };
         }
     }
 })();

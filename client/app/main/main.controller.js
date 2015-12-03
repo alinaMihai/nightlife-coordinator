@@ -6,7 +6,6 @@ angular.module('nightlifeCoordinatorApp')
             var vm = this;
             var map;
             var infoWindow;
-            var autocomplete;
             var marker;
             var service;
             vm.initMap = initMap;
@@ -134,7 +133,12 @@ angular.module('nightlifeCoordinatorApp')
                     var placeBtn = this;
                     CheckinService.checkIn(placeId).then(function(place) {
                         var people = place.users.length;
-                        placeBtn.firstChild.innerHTML = people || "";
+                        placeBtn.nextSibling.innerHTML = people || "";
+                        if (placeBtn.firstChild.className) {
+                            placeBtn.firstChild.className = "";
+                        } else {
+                            placeBtn.firstChild.className = "glyphicon glyphicon-ok";
+                        }
 
                     });
 
@@ -142,8 +146,13 @@ angular.module('nightlifeCoordinatorApp')
             }
 
             function getPeopleGoing(placeId) {
-                CheckinService.getPeopleGoingTonight(placeId).then(function(people) {
-                    document.getElementById(placeId).firstChild.innerHTML = people;
+                CheckinService.getPeopleGoingTonight(placeId).then(function(data) {
+                    if (data[1]) {
+                        document.getElementById(placeId).firstChild.className = "glyphicon glyphicon-ok";
+                    } else {
+                        document.getElementById(placeId).firstChild.className = "";
+                    }
+                    document.getElementById(placeId).nextSibling.innerHTML = data[0];
                 });
             }
 
@@ -196,7 +205,7 @@ angular.module('nightlifeCoordinatorApp')
                 }
 
                 html += '</div><div class="col-lg-10">';
-                html += '<p><b>Address:</b> ' + place.formatted_address + ' <button class="btn btn-success" id="' + place.place_id + '"><span></span> GOING</button></p>';
+                html += '<p><b>Address:</b> ' + place.formatted_address + ' <button class="btn btn-success" id="' + place.place_id + '"><span></span> GOING</button><span class="badge"></span></p>';
                 html += addReviews(place);
                 html += "</div>";
                 result.innerHTML = html;
