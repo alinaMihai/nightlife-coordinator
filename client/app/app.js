@@ -26,7 +26,7 @@ angular.module('nightlifeCoordinatorApp', [
             return config;
         },
 
-        // Intercept 401s and redirect you to login
+       /* // Intercept 401s and redirect you to login
         responseError: function(response) {
             if (response.status === 401) {
                 $window.location.href = '/auth/twitter'
@@ -36,11 +36,11 @@ angular.module('nightlifeCoordinatorApp', [
             } else {
                 return $q.reject(response);
             }
-        }
+        }*/
     };
 })
 
-.run(function($rootScope, $window, Auth) {
+/*.run(function($rootScope, $window, Auth) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function(event, next) {
         Auth.isLoggedInAsync(function(loggedIn) {
@@ -50,4 +50,4 @@ angular.module('nightlifeCoordinatorApp', [
             }
         });
     });
-});
+});*/

@@ -6,9 +6,11 @@ var Place = require('./place.model');
 
 exports.getPeopleGoingTonight = function(req, res) {
     var query = Place.findOne({});
-
     query.where('placeId', decodeURIComponent(req.params.placeId));
     query.exec(function(err, place) {
+        if (!place) {
+            return res.status(200).send(0);
+        }
         if (err) {
             return handleError(res, err);
         }

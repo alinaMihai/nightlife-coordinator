@@ -35,7 +35,6 @@
 
         function getPeopleGoingTonight(placeId) {
             var deferred = $q.defer();
-
             $http.get('/api/place/' + encodeURIComponent(placeId)).success(function(people) {
                 var currentUserGoing = isCurrentUserGoing(people);
                 deferred.resolve([people.length, currentUserGoing]);
